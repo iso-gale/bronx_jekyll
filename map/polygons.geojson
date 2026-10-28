@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "polygons",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{"type":"Feature","properties":{"label":null,"Name":"South Bronx","Description":"South Bronx was beset by arson in the 1970s, losing 80% of its housing stock and causing massive displacement.","Type":null,"Associated Displacement Event":null},"geometry":{"type":"Polygon","coordinates":[[[-73.932866,40.809064],[-73.926987,40.802552],[-73.911933,40.796474],[-73.902614,40.805048],[-73.890858,40.806134],[-73.884263,40.801793],[-73.878958,40.802769],[-73.876234,40.801033],[-73.871933,40.801467],[-73.868492,40.806568],[-73.871933,40.813187],[-73.881682,40.817961],[-73.884549,40.822735],[-73.884406,40.828919],[-73.932579,40.83673],[-73.933582,40.833259],[-73.933009,40.827184],[-73.931862,40.821542],[-73.931862,40.821216],[-73.932866,40.809064]]]}},
+{"type":"Feature","properties":{"label":null,"Name":"Charlotte St. and Boston Rd. Fires","Description":"This intersection and the surrounding blocks became the national symbol of urban decay. Charlotte St. alone experienced thousands of fires.","Type":null,"Associated Displacement Event":null},"geometry":{"type":"Polygon","coordinates":[[[-73.893274,40.83623],[-73.894147,40.834976],[-73.894147,40.834976],[-73.893999,40.832274],[-73.892782,40.832367],[-73.891693,40.832703],[-73.893274,40.83623]]]}},
+{"type":"Feature","properties":{"label":null,"Name":"Foxhurst","Description":"Foxhurst was the neighborhood that the 41st Precinct served. In the 70s, over two-thirds of the population of the neighborhood fled.","Type":null,"Associated Displacement Event":null},"geometry":{"type":"Polygon","coordinates":[[[-73.89385,40.834833],[-73.893922,40.834931],[-73.896246,40.8335],[-73.900623,40.822153],[-73.89895,40.821739],[-73.898976,40.821023],[-73.891717,40.82098],[-73.890263,40.820999],[-73.885306,40.822825],[-73.885804,40.828373],[-73.888166,40.829544],[-73.891759,40.830102],[-73.893731,40.834678],[-73.89385,40.834833]]]}}
+]
+}
