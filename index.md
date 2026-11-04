@@ -12,6 +12,8 @@ A spatial history of your place and the places it was tied to.
 <iframe src="map/" width="100%" height="520"
 style="border:1px solid #ccc; border-radius:8px;"></iframe>
 
+[Read the essay](essay.html)
+
 ## Spatial Analysis of Bronx Infrastructure
 
 1) The Cross-Bronx Expressway was connected to other places within the Bronx by internal and causal relationships, suggesting that the Expressway had a distinct impact on the region as a whole.
