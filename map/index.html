@@ -7,180 +7,918 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { height: 100%; width: 100%; }
+    #map { height: 100%; width: 100%; background: #1b1b1f; }
+
+    /* ---------- cards ---------- */
     .title-card {
       position: absolute; top: 14px; left: 14px; z-index: 1000;
-      background: #fff; padding: 12px 16px; border-radius: 8px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.3); max-width: 320px;
+      background: #fff; padding: 12px 16px; border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4); max-width: 320px;
     }
     .title-card h1 { margin: 0 0 4px; font-size: 1.1rem; }
     .title-card p  { margin: 0; font-size: 0.85rem; color: #444; }
     .popup-name { font-weight: 600; font-size: 1rem; margin-bottom: 2px; }
     .popup-date { color: #666; font-size: 0.82rem; margin-bottom: 6px; }
     .popup-desc { font-size: 0.9rem; line-height: 1.35; }
+    .main-label { font-weight: 700; font-size: 0.9rem; border: 2px solid #ff2d3d; color: #7a0014; }
+    .legend, .map-buttons {
+      background: #fff; padding: 10px 12px; border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4); font-size: 0.82rem; line-height: 1.5;
+    }
+    .legend { max-width: 270px; }
+    .legend h2 { margin: 0 0 6px; font-size: 0.9rem; }
+    .legend div { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    .legend svg { flex: none; }
+    .swatch-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; margin: 0 11px; border: 2px solid #fff; box-shadow: 0 0 0 1px #888; }
+    .swatch-box { width: 28px; height: 14px; flex: none; opacity: 0.85; }
+    .map-buttons { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .map-buttons button, .tour button {
+      font: inherit; font-size: 0.85rem; padding: 7px 10px; cursor: pointer;
+      background: #fff; border: 2px solid #222; border-radius: 6px;
+    }
+    .map-buttons button.primary, .tour button.primary { background: #ff2d3d; border-color: #ff2d3d; color: #fff; font-weight: 600; }
+    .map-buttons button:hover, .tour button:hover { filter: brightness(0.94); }
+    .map-buttons button:focus-visible, .tour button:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+
+    /* ---------- story panel ---------- */
+    .tour {
+      position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+      z-index: 1000; width: min(560px, calc(100% - 28px)); background: #fff;
+      padding: 14px 16px; border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+    }
+    .tour[hidden] { display: none; }
+    .tour .tour-step { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
+    .tour h2 { margin: 2px 0 2px; font-size: 1.15rem; }
+    .tour .tour-date { color: #a30015; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; }
+    .tour p { margin: 0 0 10px; font-size: 0.92rem; line-height: 1.4; max-height: 8.5em; overflow: auto; }
+    .tour .tour-buttons { display: flex; gap: 8px; }
+    .tour .tour-buttons button:last-child { margin-left: auto; }
+
+    /* ---------- animation ---------- */
+    .area { opacity: 0; transition: opacity 0.9s ease; }
+    .area.show { opacity: 1; }
+    .pt { opacity: 0; transition: opacity 0.6s ease; }
+    .pt.show { opacity: 1; }
+    .gold { opacity: 0; transition: opacity 0.6s ease, stroke-width 0.3s ease; }
+    .gold.show { opacity: 0.95; }
+    .gold.show.dim { opacity: 0.1; }
+    .gold.show.hl { opacity: 1; stroke-width: 7px; }
+    .gold-in   { stroke-dasharray: 12 8;  animation: flow-in 1.3s linear infinite; }
+    .gold-out  { stroke-dasharray: 8 10;  animation: flow-out 1.3s linear infinite; }
+    .gold-area { stroke-dasharray: 2 9; stroke-linecap: round; animation: flow-area 1.3s linear infinite; }
+    @keyframes flow-in   { to { stroke-dashoffset: -20; } }
+    @keyframes flow-out  { to { stroke-dashoffset: -18; } }
+    @keyframes flow-area { to { stroke-dashoffset: -11; } }
+    .main-line { animation: glow 2.6s ease-in-out infinite; }
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 3px rgba(255,45,61,0.8)); }
+      50%      { filter: drop-shadow(0 0 11px rgba(255,45,61,1)); }
+    }
+    #map.paused .gold, #map.paused .main-line { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) {
+      .gold, .main-line { animation: none !important; }
+      .area, .pt, .gold { transition: none !important; }
+    }
+    @media (max-width: 600px) {
+      .title-card { right: 14px; max-width: none; }
+      .legend { font-size: 0.75rem; max-width: 200px; }
+    }
   </style>
 </head>
 <body>
   <div class="title-card">
     <h1>The Bronx: Displacement and Mobility</h1>
-    <p>A study of migration and displacement in the Bronx from the 1940s to 19070s.</p>
+    <p>A study of migration and displacement in the Bronx from the 1940s to the 1970s.</p>
   </div>
   <div id="map"></div>
+  <div class="tour" id="tour" hidden aria-live="polite">
+    <div class="tour-step" id="tour-step"></div>
+    <h2 id="tour-name"></h2>
+    <div class="tour-date" id="tour-date"></div>
+    <p id="tour-desc"></p>
+    <div class="tour-buttons">
+      <button type="button" id="tour-prev">Previous</button>
+      <button type="button" id="tour-next" class="primary">Next</button>
+      <button type="button" id="tour-stop">Close story</button>
+    </div>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+  // ---------------------------------------------------------------
+  // SETTINGS
+  // The main place is the Cross-Bronx Expressway. It is a line, so it
+  // is drawn as a bold glowing red line, and the gold lines start from it.
+  // ---------------------------------------------------------------
   const MAIN_PLACE = "Cross-Bronx Expressway";
-  const START_ZOOM = 10;
-  const CLICK_ZOOM = 16;
-
-  const data = {
-    "type": "FeatureCollection",
-    "features": [
-      {"type":"Feature","properties":{ "Name": "Cross-Bronx Expressway","Date": "1948","Description": "The Cross-Bronx Expressway, built in 1948, led to mass displacement and a significant demographic shift within the Bronx."},"geometry": { "type": "LineString", "coordinates": [[-73.928158,40.845485],[-73.92525,40.844796],[-73.912322,40.845194],[-73.901357,40.844505],[-73.892522,40.843478],[-73.891675,40.843303],[-73.881278,40.837827],[-73.879622,40.837098],[-73.877928,40.836632],[-73.872074,40.836224],[-73.867887,40.835578],[-73.848112,40.829544],[-73.844769,40.828508]] }},
-      {"type":"Feature","properties":{"Name": "East Tremont", "Date": "1960s","Description": "Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families."},"geometry": { "type": "Point", "coordinates": [-73.900856,40.847663]}},
-      {"type":"Feature","properties":{"Name": "Crotona Park", "Date": "1963","Description": "Crotona Park was a historic green space that had a portion cut off due to the construction of the Expressway, decreasing the park from its original 155 acres."},"geometry": { "type": "Point", "coordinates": [-73.895478,40.838557]}},
-      {"type":"Feature","properties":{"Name":"Yankee Stadium","Date":"1977","Description":"The infamous quote \"The Bronx is burning\" (in reference to the insurance fraud arson epidemic) was spoken during a broadcast of the 1977 World Series, held at Yankee Stadium. The Bronx burning around it was visible from the stadium."},"geometry":{"type":"Point","coordinates":[-73.926885,40.829392]}},
-      {"type":"Feature","properties":{"Name":"South Bronx","Date":"1970s","Description":"South Bronx was beset by arson in the 1970s, losing 80% of its housing stock and causing massive displacement."},"geometry":{"type":"Polygon","coordinates":[[[-73.932866,40.809064],[-73.926987,40.802552],[-73.911933,40.796474],[-73.902614,40.805048],[-73.890858,40.806134],[-73.884263,40.801793],[-73.878958,40.802769],[-73.876234,40.801033],[-73.871933,40.801467],[-73.868492,40.806568],[-73.871933,40.813187],[-73.881682,40.817961],[-73.884549,40.822735],[-73.884406,40.828919],[-73.932579,40.83673],[-73.933582,40.833259],[-73.933009,40.827184],[-73.931862,40.821542],[-73.931862,40.821216]]]}},
-      {"type":"Feature","properties":{"Name":"Yonkers","Date":"1960s","Description":"The more well-to-do residents of the Bronx moved to Yonkers in response to the displacement from the Expressway and as a reaction to more people of color moving into the Bronx."},"geometry":{"type":"Point","coordinates":[-73.899904,40.931031]}},
-      {"type":"Feature","properties":{"Name":"Harlem","Date":"1960s","Description":"In the 1960s, many Black families moved from Harlem to the Bronx."},"geometry":{"type":"Point","coordinates":[-73.945644,40.808013]}},
-      {"type":"Feature","properties":{"Name":"Co-Op City","Date":"1960s","Description":"Many Jewish and Italian families moved to Co-op City in response to displacement from the Expressway being built."},"geometry":{"type":"Point","coordinates":[-73.829626,40.874254]}},
-      {"type":"Feature","properties":{"Name":"Manhattan","Date":"1950s","Description":"The destruction of the 3rd Avenue Elevated Line cut off the Bronx from Manhattan, leading to property values plummetting."},"geometry":{"type":"Point","coordinates":[-73.986686,40.758258]}},
-      {"type":"Feature","properties":{"Name":"Puerto Rico","Date":"1965","Description":"The passage of the Hart-Celler Act led to widespread immigration to the U.S., with Puerto Rico being a huge source of immigration to the Bronx."},"geometry":{"type":"Point","coordinates":[-66.625785,18.356502]}},
-      {"type":"Feature","properties":{"Name":"Foxhurst","Date": "1970s","Description": "Foxhurst was the neighborhood that the 41st Precinct served. In the 70s, over two-thirds of the population of the neighborhood fled."},"geometry": {"type": "Polygon","coordinates": [[[-73.89385,40.834833],[-73.893922,40.834931],[-73.896246,40.8335],[-73.900623,40.822153],[-73.89895,40.821739],[-73.898976,40.821023],[-73.891717,40.82098],[-73.890263,40.820999],[-73.885306,40.822825],[-73.885804,40.828373],[-73.888166,40.829544],[-73.891759,40.830102],[-73.893731,40.834678],[-73.89385,40.834833]]]}},
-      {"type": "Feature","properties": {"Name": "Charlotte St. and Boston Rd. Fires","Date": "1970s","Description": "This intersection and the surrounding blocks became the national symbol of urban decay. Charlotte St. alone experienced thousands of fires."},"geometry": {"type": "Polygon","coordinates": [[[-73.893274, 40.83623],[-73.894147, 40.834976],[-73.894147, 40.834976],[-73.893999, 40.832274],[-73.892782, 40.832367],[-73.891693, 40.832703],[-73.893274, 40.83623]]]}},
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.892746,
-                    40.825626
-                ]
-            },
-            "properties": {
-                "label": "1086 Simpson Street - 1086 Simpson Street, Bronx, New York 10459, United States",
-                "Name": "\"Fort Apache\" - The 41st Precinct",
-                "Date": "1914-1993",
-                "Description": "This was the home of the NYPD's 41st Precinct, nicknamed \"Fort Apache\" during the 1970s."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.920155,
-                    40.817243
-                ]
-            },
-            "properties": {
-                "label": "330 East 150th Street - 330 East 150th Street, Bronx, New York 10451, United States",
-                "Name": "Engine Company 41-2",
-                "Date": 1974,
-                "Description": "Firehouse that was closed on January 17th, 1974."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.92216,
-                    40.813088
-                ]
-            },
-            "properties": {
-                "label": "341 East 143rd Street - 341 East 143rd Street, Bronx, New York 10454, United States",
-                "Name": "Ladder Company 71-2",
-                "Date": 1974,
-                "Description": "Firehouse that was closed on December 16th, 1974."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.899058,
-                    40.846085
-                ]
-            },
-            "properties": {
-                "label": "453 East 176th Street - 453 East 176th Street, Bronx, New York 10457, United States",
-                "Name": "Ladder Company 27-2",
-                "Date": 1972,
-                "Description": "Firehouse that was closed on November 6th, 1972."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.908059,
-                    40.828227
-                ]
-            },
-            "properties": {
-                "label": "491 East 166th Street - 491 East 166th Street, Bronx, New York 10456, United States",
-                "Name": "Engine Company 50-2",
-                "Date": 1974,
-                "Description": "Firehouse that was closed on March 22nd, 1974."
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.887734,
-                    40.851896
-                ]
-            },
-            "properties": {
-                "label": "2225 Belmont Avenue - 2225 Belmont Avenue, Bronx, New York 10457, United States",
-                "Name": "Engine Company 88-2",
-                "Date": 1972,
-                "Description": "Firehouse that was closed on November 22nd, 1972."
-            }
-          }    
-    ]
+  const COLORS = {
+    main: "#ff2d3d",       // the Expressway: bold red
+    within: "#1d8fe1",     // places inside the Bronx: blue
+    connected: "#b45cff",  // places outside the Bronx: purple
+    gold: "#ffb300",       // connection lines: gold
+    area: "#ff8a00"        // neighbourhoods and areas: orange
   };
 
-  const map = L.map("map");
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
+  // The order of the story. Change this list to change the tour.
+  const TOUR = ["Cross-Bronx Expressway", "Manhattan", "East Tremont", "Crotona Park", "Puerto Rico", "Harlem", "Yonkers", "Co-Op City", "Engine Company 88-2", "Ladder Company 27-2", "Engine Company 41-2", "Engine Company 50-2", "Ladder Company 71-2", "South Bronx", "Foxhurst", "Charlotte St. and Boston Rd. Fires", "\"Fort Apache\" - The 41st Precinct", "Yankee Stadium"];
 
-  function nameOf(props) { return (props && (props.Name || props.name || props.label)) || ""; }
-
-  let mainLatLng = null;
-  const layer = L.geoJSON(data, {
-    pointToLayer: function (feature, latlng) {
-      const isMain = nameOf(feature.properties) === MAIN_PLACE;
-      if (isMain) mainLatLng = latlng;
-      return L.circleMarker(latlng, {
-        radius: isMain ? 11 : 7,
-        fillColor: isMain ? "#c0392b" : "#2c5f8a",
-        color: "#ffffff", weight: 2, fillOpacity: 0.9
-      });
+  // ---------------------------------------------------------------
+  // DATA
+  // Every feature has a Type: main, within, connected, or area.
+  // To add a place, copy a block below and change the words.
+  // ---------------------------------------------------------------
+  const data = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Cross-Bronx Expressway",
+        "Date": "1948",
+        "Description": "The Cross-Bronx Expressway, built in 1948, led to mass displacement and a significant demographic shift within the Bronx.",
+        "Type": "main"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.928158,
+            40.845485
+          ],
+          [
+            -73.92525,
+            40.844796
+          ],
+          [
+            -73.912322,
+            40.845194
+          ],
+          [
+            -73.901357,
+            40.844505
+          ],
+          [
+            -73.892522,
+            40.843478
+          ],
+          [
+            -73.891675,
+            40.843303
+          ],
+          [
+            -73.881278,
+            40.837827
+          ],
+          [
+            -73.879622,
+            40.837098
+          ],
+          [
+            -73.877928,
+            40.836632
+          ],
+          [
+            -73.872074,
+            40.836224
+          ],
+          [
+            -73.867887,
+            40.835578
+          ],
+          [
+            -73.848112,
+            40.829544
+          ],
+          [
+            -73.844769,
+            40.828508
+          ]
+        ]
+      }
     },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "East Tremont",
+        "Date": "1960s",
+        "Description": "Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families.",
+        "Type": "within"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.900856,
+          40.847663
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Crotona Park",
+        "Date": "1963",
+        "Description": "Crotona Park was a historic green space that had a portion cut off due to the construction of the Expressway, decreasing the park from its original 155 acres.",
+        "Type": "within"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.895478,
+          40.838557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Yankee Stadium",
+        "Date": "1977",
+        "Description": "The infamous quote \"The Bronx is burning\" (in reference to the insurance fraud arson epidemic) was spoken during a broadcast of the 1977 World Series, held at Yankee Stadium. The Bronx burning around it was visible from the stadium.",
+        "Type": "within"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.926885,
+          40.829392
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "South Bronx",
+        "Date": "1970s",
+        "Description": "South Bronx was beset by arson in the 1970s, losing 80% of its housing stock and causing massive displacement.",
+        "Type": "area"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -73.932866,
+              40.809064
+            ],
+            [
+              -73.926987,
+              40.802552
+            ],
+            [
+              -73.911933,
+              40.796474
+            ],
+            [
+              -73.902614,
+              40.805048
+            ],
+            [
+              -73.890858,
+              40.806134
+            ],
+            [
+              -73.884263,
+              40.801793
+            ],
+            [
+              -73.878958,
+              40.802769
+            ],
+            [
+              -73.876234,
+              40.801033
+            ],
+            [
+              -73.871933,
+              40.801467
+            ],
+            [
+              -73.868492,
+              40.806568
+            ],
+            [
+              -73.871933,
+              40.813187
+            ],
+            [
+              -73.881682,
+              40.817961
+            ],
+            [
+              -73.884549,
+              40.822735
+            ],
+            [
+              -73.884406,
+              40.828919
+            ],
+            [
+              -73.932579,
+              40.83673
+            ],
+            [
+              -73.933582,
+              40.833259
+            ],
+            [
+              -73.933009,
+              40.827184
+            ],
+            [
+              -73.931862,
+              40.821542
+            ],
+            [
+              -73.931862,
+              40.821216
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Yonkers",
+        "Date": "1960s",
+        "Description": "The more well-to-do residents of the Bronx moved to Yonkers in response to the displacement from the Expressway and as a reaction to more people of color moving into the Bronx.",
+        "Type": "connected"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.899904,
+          40.931031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Harlem",
+        "Date": "1960s",
+        "Description": "In the 1960s, many Black families moved from Harlem to the Bronx.",
+        "Type": "connected"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.945644,
+          40.808013
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Co-Op City",
+        "Date": "1960s",
+        "Description": "Many Jewish and Italian families moved to Co-op City in response to displacement from the Expressway being built.",
+        "Type": "within"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.829626,
+          40.874254
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Manhattan",
+        "Date": "1950s",
+        "Description": "The destruction of the 3rd Avenue Elevated Line cut off the Bronx from Manhattan, leading to property values plummetting.",
+        "Type": "connected"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.986686,
+          40.758258
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Puerto Rico",
+        "Date": "1965",
+        "Description": "The passage of the Hart-Celler Act led to widespread immigration to the U.S., with Puerto Rico being a huge source of immigration to the Bronx.",
+        "Type": "connected"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.625785,
+          18.356502
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Foxhurst",
+        "Date": "1970s",
+        "Description": "Foxhurst was the neighborhood that the 41st Precinct served. In the 70s, over two-thirds of the population of the neighborhood fled.",
+        "Type": "area"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -73.89385,
+              40.834833
+            ],
+            [
+              -73.893922,
+              40.834931
+            ],
+            [
+              -73.896246,
+              40.8335
+            ],
+            [
+              -73.900623,
+              40.822153
+            ],
+            [
+              -73.89895,
+              40.821739
+            ],
+            [
+              -73.898976,
+              40.821023
+            ],
+            [
+              -73.891717,
+              40.82098
+            ],
+            [
+              -73.890263,
+              40.820999
+            ],
+            [
+              -73.885306,
+              40.822825
+            ],
+            [
+              -73.885804,
+              40.828373
+            ],
+            [
+              -73.888166,
+              40.829544
+            ],
+            [
+              -73.891759,
+              40.830102
+            ],
+            [
+              -73.893731,
+              40.834678
+            ],
+            [
+              -73.89385,
+              40.834833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Charlotte St. and Boston Rd. Fires",
+        "Date": "1970s",
+        "Description": "This intersection and the surrounding blocks became the national symbol of urban decay. Charlotte St. alone experienced thousands of fires.",
+        "Type": "area"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -73.893274,
+              40.83623
+            ],
+            [
+              -73.894147,
+              40.834976
+            ],
+            [
+              -73.894147,
+              40.834976
+            ],
+            [
+              -73.893999,
+              40.832274
+            ],
+            [
+              -73.892782,
+              40.832367
+            ],
+            [
+              -73.891693,
+              40.832703
+            ],
+            [
+              -73.893274,
+              40.83623
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.892746,
+          40.825626
+        ]
+      },
+      "properties": {
+        "Name": "\"Fort Apache\" - The 41st Precinct",
+        "Date": "1914-1993",
+        "Description": "This was the home of the NYPD's 41st Precinct, nicknamed \"Fort Apache\" during the 1970s.",
+        "Type": "within"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.920155,
+          40.817243
+        ]
+      },
+      "properties": {
+        "Name": "Engine Company 41-2",
+        "Date": "1974",
+        "Description": "Firehouse that was closed on January 17th, 1974.",
+        "Type": "within"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.92216,
+          40.813088
+        ]
+      },
+      "properties": {
+        "Name": "Ladder Company 71-2",
+        "Date": "1974",
+        "Description": "Firehouse that was closed on December 16th, 1974.",
+        "Type": "within"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.899058,
+          40.846085
+        ]
+      },
+      "properties": {
+        "Name": "Ladder Company 27-2",
+        "Date": "1972",
+        "Description": "Firehouse that was closed on November 6th, 1972.",
+        "Type": "within"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.908059,
+          40.828227
+        ]
+      },
+      "properties": {
+        "Name": "Engine Company 50-2",
+        "Date": "1974",
+        "Description": "Firehouse that was closed on March 22nd, 1974.",
+        "Type": "within"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.887734,
+          40.851896
+        ]
+      },
+      "properties": {
+        "Name": "Engine Company 88-2",
+        "Date": "1972",
+        "Description": "Firehouse that was closed on November 22nd, 1972.",
+        "Type": "within"
+      }
+    }
+  ]
+};
+
+  // ---------------------------------------------------------------
+  // MAP
+  // ---------------------------------------------------------------
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const map = L.map("map", { zoomControl: false });
+  L.control.zoom({ position: "bottomright" }).addTo(map);
+  const attribution = "&copy; OpenStreetMap contributors &copy; CARTO";
+  const darkMap = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    { subdomains: "abcd", maxZoom: 20, attribution: attribution }).addTo(map);
+  const lightMap = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    { subdomains: "abcd", maxZoom: 20, attribution: attribution });
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function popupHtml(p) {
+    return '<div class="popup-name">' + esc(p.Name || "Untitled") + "</div>" +
+           (p.Date ? '<div class="popup-date">' + esc(p.Date) + "</div>" : "") +
+           '<div class="popup-desc">' + esc(p.Description || "") + "</div>";
+  }
+  function byType(type) {
+    return data.features.filter(function (f) { return (f.properties || {}).Type === type; });
+  }
+  function fc(features) { return { type: "FeatureCollection", features: features }; }
+  function ringCenter(ring) {
+    let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+    ring.forEach(function (c) {
+      minLat = Math.min(minLat, c[1]); maxLat = Math.max(maxLat, c[1]);
+      minLng = Math.min(minLng, c[0]); maxLng = Math.max(maxLng, c[0]);
+    });
+    return L.latLng((minLat + maxLat) / 2, (minLng + maxLng) / 2);
+  }
+
+  const registry = {};   // name -> { props, layer }
+  const connByName = {}; // name -> { from, to, line }
+  const goldLines = [];
+
+  // The Expressway
+  const mainFeatures = data.features.filter(function (f) { return (f.properties || {}).Name === MAIN_PLACE; });
+  const expresswayCoords = [];
+  mainFeatures.forEach(function (f) {
+    f.geometry.coordinates.forEach(function (c) { expresswayCoords.push([c[1], c[0]]); });
+  });
+  function closestOnExpressway(latlng) {
+    // the closest point along the line, not just the closest corner
+    const k = Math.cos(latlng.lat * Math.PI / 180);
+    let best = expresswayCoords[0], bestD = Infinity;
+    for (let i = 0; i < expresswayCoords.length - 1; i++) {
+      const a = expresswayCoords[i], b = expresswayCoords[i + 1];
+      const ax = a[1] * k, ay = a[0], bx = b[1] * k, by = b[0];
+      const px = latlng.lng * k, py = latlng.lat;
+      const dx = bx - ax, dy = by - ay;
+      const len2 = dx * dx + dy * dy;
+      let t = len2 === 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / len2;
+      t = Math.max(0, Math.min(1, t));
+      const cx = ax + t * dx, cy = ay + t * dy;
+      const d = Math.pow(px - cx, 2) + Math.pow(py - cy, 2);
+      if (d < bestD) { bestD = d; best = [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]; }
+    }
+    return best;
+  }
+
+  // 1. Areas (bottom)
+  const areaLayer = L.geoJSON(fc(byType("area")), {
+    style: { className: "area", color: COLORS.area, weight: 2, fillColor: COLORS.area, fillOpacity: 0.25 },
     onEachFeature: function (feature, lyr) {
-      const p = feature.properties || {};
-      const name = p.Name || p.name || p.label || "Untitled";
-      const date = p.Date || p.date || "";
-      const desc = p.Description || p.description || "";
-      lyr.bindPopup(
-        '<div class="popup-name">' + name + "</div>" +
-        (date ? '<div class="popup-date">' + date + "</div>" : "") +
-        '<div class="popup-desc">' + desc + "</div>"
-      );
-      lyr.on("click", function () { if (lyr.getLatLng) map.flyTo(lyr.getLatLng(), CLICK_ZOOM); });
+      const name = feature.properties.Name;
+      registry[name] = { props: feature.properties, layer: lyr };
+      lyr.bindPopup(popupHtml(feature.properties));
+      lyr.bindTooltip(esc(name), { sticky: true });
+      lyr.on("click", function () { focusPlace(name, true); });
     }
   }).addTo(map);
 
-  if (mainLatLng) { map.setView(mainLatLng, START_ZOOM); }
-  else if (layer.getBounds().isValid()) { map.fitBounds(layer.getBounds(), { padding: [40, 40] }); }
+  // 2. Gold lines: from the Expressway to every other place and area
+  const goldLayer = L.layerGroup().addTo(map);
+  function addGold(name, to, cls) {
+    const from = closestOnExpressway(to);
+    const line = L.polyline([from, to], { className: "gold " + cls, color: COLORS.gold, weight: 4, opacity: 1 })
+      .bindTooltip(esc(MAIN_PLACE + " to " + name), { sticky: true })
+      .addTo(goldLayer);
+    goldLines.push(line);
+    connByName[name] = { from: from, to: to, line: line };
+  }
+  byType("within").forEach(function (f) {
+    addGold(f.properties.Name, L.latLng(f.geometry.coordinates[1], f.geometry.coordinates[0]), "gold-in");
+  });
+  byType("connected").forEach(function (f) {
+    addGold(f.properties.Name, L.latLng(f.geometry.coordinates[1], f.geometry.coordinates[0]), "gold-out");
+  });
+  byType("area").forEach(function (f) {
+    addGold(f.properties.Name, ringCenter(f.geometry.coordinates[0]), "gold-area");
+  });
+
+  // 3. The main place, on top of the gold lines
+  const mainLayer = L.geoJSON(fc(mainFeatures), {
+    style: { className: "main-line", color: COLORS.main, weight: 8, opacity: 1, lineCap: "round", lineJoin: "round" },
+    onEachFeature: function (feature, lyr) {
+      registry[MAIN_PLACE] = { props: feature.properties, layer: lyr };
+      lyr.bindPopup(popupHtml(feature.properties));
+      lyr.bindTooltip(MAIN_PLACE + " (main place)", { permanent: true, direction: "top", className: "main-label" });
+      lyr.on("click", function () { clearFocus(); map.flyToBounds(lyr.getBounds(), { padding: [80, 80], duration: 1.2 }); });
+    }
+  }).addTo(map);
+
+  // 4. Points, on top
+  const pointLayer = L.geoJSON(fc(byType("within").concat(byType("connected"))), {
+    pointToLayer: function (feature, latlng) {
+      const isConnected = feature.properties.Type === "connected";
+      return L.circleMarker(latlng, {
+        className: "pt", radius: 8,
+        fillColor: isConnected ? COLORS.connected : COLORS.within,
+        color: "#ffffff", weight: 2, fillOpacity: 0.95
+      });
+    },
+    onEachFeature: function (feature, lyr) {
+      const name = feature.properties.Name;
+      registry[name] = { props: feature.properties, layer: lyr };
+      lyr.bindPopup(popupHtml(feature.properties));
+      lyr.bindTooltip(esc(name), { direction: "top", offset: [0, -8] });
+      lyr.on("click", function () { focusPlace(name, true); });
+    }
+  }).addTo(map);
+
+  // ---------------------------------------------------------------
+  // FOCUS: click a place to light up its gold line and dim the others
+  // ---------------------------------------------------------------
+  function clearFocus() {
+    goldLines.forEach(function (l) {
+      const el = l.getElement();
+      if (el) { el.classList.remove("dim", "hl"); }
+    });
+  }
+  function focusPlace(name, fly) {
+    clearFocus();
+    const c = connByName[name];
+    if (!c) return;
+    goldLines.forEach(function (l) {
+      const el = l.getElement();
+      if (el) { el.classList.add("dim"); }
+    });
+    const el = c.line.getElement();
+    if (el) { el.classList.remove("dim"); el.classList.add("hl"); }
+    if (fly) {
+      const b = L.latLngBounds([c.from, c.to]);
+      const r = registry[name];
+      if (r && r.layer.getBounds) { b.extend(r.layer.getBounds()); }
+      map.flyToBounds(b, { padding: [100, 100], maxZoom: 15, duration: 1.2 });
+    }
+  }
+  map.on("click", clearFocus);
+
+  // ---------------------------------------------------------------
+  // INTRO ANIMATION: the Expressway draws itself, then the gold lines
+  // flow out to each place, then the places appear
+  // ---------------------------------------------------------------
+  function showEls(selector) {
+    document.querySelectorAll(selector).forEach(function (el) { el.classList.add("show"); });
+  }
+  function revealAll() { showEls("#map .area"); showEls("#map .gold"); showEls("#map .pt"); }
+  function drawIn(el, ms, done) {
+    if (!el || !el.getTotalLength) { done(); return; }
+    const len = el.getTotalLength();
+    el.style.transition = "none";
+    el.style.strokeDasharray = len + " " + len;
+    el.style.strokeDashoffset = len;
+    el.getBoundingClientRect();
+    el.style.transition = "stroke-dashoffset " + ms + "ms ease-in-out";
+    el.style.strokeDashoffset = 0;
+    setTimeout(function () {
+      el.style.transition = ""; el.style.strokeDasharray = ""; el.style.strokeDashoffset = "";
+      done();
+    }, ms + 60);
+  }
+  function startIntro() {
+    map.fitBounds(mainLayer.getBounds(), { padding: [90, 90] });
+    if (reduceMotion) { revealAll(); return; }
+    let mainEl = null;
+    mainLayer.eachLayer(function (l) { mainEl = l.getElement(); });
+    setTimeout(function () { showEls("#map .area"); }, 300);
+    drawIn(mainEl, 2600, function () {
+      goldLines.forEach(function (l, i) {
+        setTimeout(function () { const el = l.getElement(); if (el) { el.classList.add("show"); } }, i * 140);
+      });
+      setTimeout(function () { showEls("#map .pt"); }, goldLines.length * 140 + 300);
+    });
+    setTimeout(revealAll, 12000); // safety: everything is visible even if something above fails
+  }
+  startIntro();
+
+  // ---------------------------------------------------------------
+  // STORY TOUR: steps through the places in order
+  // ---------------------------------------------------------------
+  const tour = document.getElementById("tour");
+  let step = -1;
+  function showStep(i) {
+    if (i < 0 || i >= TOUR.length) return;
+    step = i;
+    const name = TOUR[i];
+    const r = registry[name];
+    const p = r ? r.props : { Name: name };
+    document.getElementById("tour-step").textContent = "Step " + (i + 1) + " of " + TOUR.length;
+    document.getElementById("tour-name").textContent = p.Name || name;
+    document.getElementById("tour-date").textContent = p.Date || "";
+    document.getElementById("tour-desc").textContent = p.Description || "";
+    document.getElementById("tour-prev").disabled = (i === 0);
+    document.getElementById("tour-next").textContent = (i === TOUR.length - 1) ? "Finish" : "Next";
+    map.closePopup();
+    if (name === MAIN_PLACE) {
+      clearFocus();
+      map.flyToBounds(mainLayer.getBounds(), { padding: [90, 90], duration: 1.2 });
+    } else {
+      focusPlace(name, true);
+    }
+  }
+  function startTour() { tour.hidden = false; revealAll(); showStep(0); }
+  function stopTour() {
+    tour.hidden = true; step = -1; clearFocus(); map.closePopup();
+    map.flyToBounds(mainLayer.getBounds(), { padding: [90, 90], duration: 1.2 });
+  }
+  document.getElementById("tour-prev").addEventListener("click", function () { showStep(step - 1); });
+  document.getElementById("tour-next").addEventListener("click", function () {
+    if (step >= TOUR.length - 1) { stopTour(); } else { showStep(step + 1); }
+  });
+  document.getElementById("tour-stop").addEventListener("click", stopTour);
+  L.DomEvent.disableClickPropagation(tour);
+  L.DomEvent.disableScrollPropagation(tour);
+  document.addEventListener("keydown", function (e) {
+    if (tour.hidden) return;
+    if (e.key === "ArrowRight") { if (step < TOUR.length - 1) showStep(step + 1); }
+    else if (e.key === "ArrowLeft") { showStep(step - 1); }
+    else if (e.key === "Escape") { stopTour(); }
+  });
+
+  // ---------------------------------------------------------------
+  // BUTTONS, LAYER SWITCHES, AND KEY
+  // ---------------------------------------------------------------
+  const buttons = L.control({ position: "topright" });
+  buttons.onAdd = function () {
+    const div = L.DomUtil.create("div", "map-buttons");
+    div.innerHTML =
+      '<button type="button" id="btn-tour" class="primary">Start the story</button>' +
+      '<button type="button" id="btn-main">Zoom to the Expressway</button>' +
+      '<button type="button" id="btn-all">Show all connections</button>' +
+      '<button type="button" id="btn-pause" aria-pressed="false">Pause animation</button>';
+    L.DomEvent.disableClickPropagation(div);
+    return div;
+  };
+  buttons.addTo(map);
+  document.getElementById("btn-tour").addEventListener("click", startTour);
+  document.getElementById("btn-main").addEventListener("click", function () {
+    clearFocus();
+    map.flyToBounds(mainLayer.getBounds(), { padding: [90, 90], duration: 1.2 });
+  });
+  document.getElementById("btn-all").addEventListener("click", function () {
+    clearFocus();
+    const all = L.featureGroup([mainLayer, goldLayer, pointLayer]);
+    map.flyToBounds(all.getBounds(), { padding: [50, 50], duration: 1.4 });
+  });
+  document.getElementById("btn-pause").addEventListener("click", function () {
+    const paused = document.getElementById("map").classList.toggle("paused");
+    this.setAttribute("aria-pressed", paused ? "true" : "false");
+    this.textContent = paused ? "Play animation" : "Pause animation";
+  });
+  L.control.layers({ "Dark map": darkMap, "Light map": lightMap },
+    { "Gold connections": goldLayer, "Areas": areaLayer, "Places": pointLayer },
+    { position: "topright", collapsed: true }).addTo(map);
+
+  function line(dash, width, color, cap) {
+    return '<svg width="38" height="10" aria-hidden="true"><line x1="2" y1="5" x2="36" y2="5" stroke="' + color +
+           '" stroke-width="' + width + '" stroke-dasharray="' + dash + '" stroke-linecap="' + (cap || "butt") + '"/></svg>';
+  }
+  const legend = L.control({ position: "bottomleft" });
+  legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "legend");
+    div.innerHTML =
+      "<h2>Key</h2>" +
+      "<div>" + line("0", 8, COLORS.main) + "Cross-Bronx Expressway (main place)</div>" +
+      '<div><span class="swatch-dot" style="background:' + COLORS.within + '"></span>Place inside the Bronx</div>' +
+      '<div><span class="swatch-dot" style="background:' + COLORS.connected + '"></span>Connected place outside the Bronx</div>' +
+      "<div>" + line("12 8", 4, COLORS.gold) + "Gold line to a place inside the Bronx</div>" +
+      "<div>" + line("8 10", 4, COLORS.gold) + "Gold line to a place outside the Bronx</div>" +
+      "<div>" + line("0.1 9", 4, COLORS.gold, "round") + "Gold dots to an area</div>" +
+      '<div><span class="swatch-box" style="background:' + COLORS.area + '"></span>Area hit by fires and flight</div>';
+    L.DomEvent.disableClickPropagation(div);
+    return div;
+  };
+  legend.addTo(map);
   </script>
 </body>
 </html>
