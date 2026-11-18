@@ -177,7 +177,7 @@
    "properties": {
     "Name": "Charlotte St. and Boston Rd. Fires",
     "Date": "1970s",
-    "Description": "This intersection and the surrounding blocks became the national symbol of urban decay. Charlotte St. alone experienced thousands of fires.",
+    "Description": "This intersection and the surrounding blocks became the national symbol of urban decay. Charlotte St. alone experienced thousands of fires.<br><img src='../images/mill1.jpg' width='220' alt='What is in the photo'>",
     "Type": "area"
    },
    "geometry": {
