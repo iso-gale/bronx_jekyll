@@ -102,7 +102,7 @@
     "Name": "Economic Impact Area #1",
     "Date": 1948,
     "Description": "East Tremont was by far one of the most economically impacted areas by the Cross-Bronx Expressway.",
-    "Type": "within"
+    "Type": "area"
    },
    "geometry": {
     "type": "Polygon",
@@ -125,7 +125,7 @@
     "Name": "Economic Impact Area #2",
     "Date": 1948,
     "Description": "The South Bronx was also enormously impacted by the construction of the Cross-Bronx Expressway.",
-    "Type": "within"
+    "Type": "area"
    },
    "geometry": {
     "type": "Polygon",
