@@ -215,23 +215,23 @@
      ]
     ]
    }
-  }
-{
-            "type": "Feature",
-            "properties": {
-                "Name": "Economic Impact Area #1",
-                "Date": 1948,
-                "Description": "East Tremont was by far one of the most economically impacted areas by the Cross-Bronx Expressway.",
-                "Type": "within"
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [
-                            -73.902718,
-                            40.844811
-                        ],
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Economic Impact Area #1",
+    "Date": "1948",
+    "Description": "East Tremont was by far one of the most economically impacted areas by the Cross-Bronx Expressway.",
+    "Type": "area"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -73.902718,
+        40.844811
+      ],
                         [
                             -73.892574,
                             40.843653
@@ -256,10 +256,11 @@
                             -73.902718,
                             40.844811
                         ]
-                    ]
-                ]
-            }
-        },
+     ]
+    ]
+   }
+  },
+
         {
             "type": "Feature",
             "properties": {
