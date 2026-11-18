@@ -8,6 +8,10 @@ The Cross-Bronx Expressway was connected to other places within the Bronx by int
 
 One of the main things that the map shows is the connection between the most severe economic areas of impact from the Cross-Bronx Expressway and the areas with the most affected housing stock from the fires of the 1970s. Notably, the areas with the most economic consequences from the Expressway were the areas that later engaged in "planned shrinkage", the purposeful closure of essential municipal infrastructure (such as firehouses) to push people away from an area. This demonstrates that the consequences of the Expressway were direct and necessary predecessors to the conditions that created the arson epidemic in the Bronx.
 
+> This demonstrates that the consequences of the Expressway were direct and necessary predecessors to the conditions that created the arson epidemic in the Bronx.
+>
+> Author, *Title* (Year), page.[^3]
+
 Another important aspect of the map is the overlap of the polygon that displays fires and high-flight areas, the polygon displaying the worst singular fire event, and the polygon that shows the Foxhurst area: the region that was under the "protection" of the 41st Precinct. The 41st Precinct famously had the attitude of it being them versus the region, and policed in a way that was consistent with that attitude. However, despite their intensity and often extrajudicial actions, the worst of the fires took place within that region, proving the importance of municipal and social infrastructure.
 
 ## Data and credits
