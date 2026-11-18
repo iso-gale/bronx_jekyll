@@ -13,7 +13,7 @@
    "properties": {
     "Name": "East Tremont",
     "Date": "1960s",
-    "Description": "Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families. <br><img src='../images/east tremont destruction.jpg' width='220' alt='The demolition of East Tremont to make space for the Cross-Bronx Expressway.'>",
+    "Description": "Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families. <br><img src='../images/east-tremont-destruction.jpg' width='220' alt='The demolition of East Tremont to make space for the Cross-Bronx Expressway.'>",
     "Type": "within"
    },
    "geometry": {
