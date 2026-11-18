@@ -13,7 +13,7 @@
    "properties": {
     "Name": "Cross-Bronx Expressway",
     "Date": "1948",
-    "Description": "The Cross-Bronx Expressway, built in 1948, led to mass displacement and a significant demographic shift within the Bronx.",
+    "Description": "The Cross-Bronx Expressway, built in 1948, led to mass displacement and a significant demographic shift within the Bronx. <br><img src='../images/cross-bronx-expressway.jpg' width='220' alt='What is in the photo'>",
     "Type": "main"
    },
    "geometry": {
