@@ -1,8 +1,236 @@
 {
-"type": "FeatureCollection",
-"name": "points",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"features": [
-{"type":"Feature","properties":{"label":null,"Name":"East Tremont","Description":"Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families.","Date":null,"Type":"within","Associated Displacement Event":"Cross-Bronx Expressway"},"geometry":{"type":"Point","coordinates":[-73.900856,40.847663]}}
-]
+ "type": "FeatureCollection",
+ "name": "points",
+ "crs": {
+  "type": "name",
+  "properties": {
+   "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+  }
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "East Tremont",
+    "Date": "1960s",
+    "Description": "Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families.",
+    "Type": "within"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.900856,
+     40.847663
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Crotona Park",
+    "Date": "1963",
+    "Description": "Crotona Park was a historic green space that had a portion cut off due to the construction of the Expressway, decreasing the park from its original 155 acres.",
+    "Type": "within"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.895478,
+     40.838557
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Yankee Stadium",
+    "Date": "1977",
+    "Description": "The infamous quote \"The Bronx is burning\" (in reference to the insurance fraud arson epidemic) was spoken during a broadcast of the 1977 World Series, held at Yankee Stadium. The Bronx burning around it was visible from the stadium.",
+    "Type": "within"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.926885,
+     40.829392
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Yonkers",
+    "Date": "1960s",
+    "Description": "The more well-to-do residents of the Bronx moved to Yonkers in response to the displacement from the Expressway and as a reaction to more people of color moving into the Bronx.",
+    "Type": "connected"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.899904,
+     40.931031
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Harlem",
+    "Date": "1960s",
+    "Description": "In the 1960s, many Black families moved from Harlem to the Bronx.",
+    "Type": "connected"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.945644,
+     40.808013
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Co-Op City",
+    "Date": "1960s",
+    "Description": "Many Jewish and Italian families moved to Co-op City in response to displacement from the Expressway being built.",
+    "Type": "within"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.829626,
+     40.874254
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Manhattan",
+    "Date": "1950s",
+    "Description": "The destruction of the 3rd Avenue Elevated Line cut off the Bronx from Manhattan, leading to property values plummetting.",
+    "Type": "connected"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.986686,
+     40.758258
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Puerto Rico",
+    "Date": "1965",
+    "Description": "The passage of the Hart-Celler Act led to widespread immigration to the U.S., with Puerto Rico being a huge source of immigration to the Bronx.",
+    "Type": "connected"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -66.625785,
+     18.356502
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.892746,
+     40.825626
+    ]
+   },
+   "properties": {
+    "Name": "\"Fort Apache\" - The 41st Precinct",
+    "Date": "1914-1993",
+    "Description": "This was the home of the NYPD's 41st Precinct, nicknamed \"Fort Apache\" during the 1970s.",
+    "Type": "within"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.920155,
+     40.817243
+    ]
+   },
+   "properties": {
+    "Name": "Engine Company 41-2",
+    "Date": "1974",
+    "Description": "Firehouse that was closed on January 17th, 1974.",
+    "Type": "within"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.92216,
+     40.813088
+    ]
+   },
+   "properties": {
+    "Name": "Ladder Company 71-2",
+    "Date": "1974",
+    "Description": "Firehouse that was closed on December 16th, 1974.",
+    "Type": "within"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.899058,
+     40.846085
+    ]
+   },
+   "properties": {
+    "Name": "Ladder Company 27-2",
+    "Date": "1972",
+    "Description": "Firehouse that was closed on November 6th, 1972.",
+    "Type": "within"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.908059,
+     40.828227
+    ]
+   },
+   "properties": {
+    "Name": "Engine Company 50-2",
+    "Date": "1974",
+    "Description": "Firehouse that was closed on March 22nd, 1974.",
+    "Type": "within"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.887734,
+     40.851896
+    ]
+   },
+   "properties": {
+    "Name": "Engine Company 88-2",
+    "Date": "1972",
+    "Description": "Firehouse that was closed on November 22nd, 1972.",
+    "Type": "within"
+   }
+  }
+ ]
 }

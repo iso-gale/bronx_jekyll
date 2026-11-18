@@ -1,8 +1,78 @@
 {
-"type": "FeatureCollection",
-"name": "lines",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"features": [
-
-]
+ "type": "FeatureCollection",
+ "name": "lines",
+ "crs": {
+  "type": "name",
+  "properties": {
+   "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+  }
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "Name": "Cross-Bronx Expressway",
+    "Date": "1948",
+    "Description": "The Cross-Bronx Expressway, built in 1948, led to mass displacement and a significant demographic shift within the Bronx.",
+    "Type": "main"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -73.928158,
+      40.845485
+     ],
+     [
+      -73.92525,
+      40.844796
+     ],
+     [
+      -73.912322,
+      40.845194
+     ],
+     [
+      -73.901357,
+      40.844505
+     ],
+     [
+      -73.892522,
+      40.843478
+     ],
+     [
+      -73.891675,
+      40.843303
+     ],
+     [
+      -73.881278,
+      40.837827
+     ],
+     [
+      -73.879622,
+      40.837098
+     ],
+     [
+      -73.877928,
+      40.836632
+     ],
+     [
+      -73.872074,
+      40.836224
+     ],
+     [
+      -73.867887,
+      40.835578
+     ],
+     [
+      -73.848112,
+      40.829544
+     ],
+     [
+      -73.844769,
+      40.828508
+     ]
+    ]
+   }
+  }
+ ]
 }

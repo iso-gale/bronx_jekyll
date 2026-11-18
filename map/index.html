@@ -124,512 +124,18 @@
 
   // ---------------------------------------------------------------
   // DATA
-  // Every feature has a Type: main, within, connected, or area.
-  // To add a place, copy a block below and change the words.
+  // Your places are in three files in this folder: points.geojson, lines.geojson,
+  // and polygons.geojson. To add or change a place, edit those files.
+  // Every place has a Type: main, within, connected, or area.
   // ---------------------------------------------------------------
-  const data = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Cross-Bronx Expressway",
-        "Date": "1948",
-        "Description": "The Cross-Bronx Expressway, built in 1948, led to mass displacement and a significant demographic shift within the Bronx.",
-        "Type": "main"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -73.928158,
-            40.845485
-          ],
-          [
-            -73.92525,
-            40.844796
-          ],
-          [
-            -73.912322,
-            40.845194
-          ],
-          [
-            -73.901357,
-            40.844505
-          ],
-          [
-            -73.892522,
-            40.843478
-          ],
-          [
-            -73.891675,
-            40.843303
-          ],
-          [
-            -73.881278,
-            40.837827
-          ],
-          [
-            -73.879622,
-            40.837098
-          ],
-          [
-            -73.877928,
-            40.836632
-          ],
-          [
-            -73.872074,
-            40.836224
-          ],
-          [
-            -73.867887,
-            40.835578
-          ],
-          [
-            -73.848112,
-            40.829544
-          ],
-          [
-            -73.844769,
-            40.828508
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "East Tremont",
-        "Date": "1960s",
-        "Description": "Historic, vibrant neighborhood that was a hotspot for Jewish, Italian, and Irish families.",
-        "Type": "within"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.900856,
-          40.847663
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Crotona Park",
-        "Date": "1963",
-        "Description": "Crotona Park was a historic green space that had a portion cut off due to the construction of the Expressway, decreasing the park from its original 155 acres.",
-        "Type": "within"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.895478,
-          40.838557
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Yankee Stadium",
-        "Date": "1977",
-        "Description": "The infamous quote \"The Bronx is burning\" (in reference to the insurance fraud arson epidemic) was spoken during a broadcast of the 1977 World Series, held at Yankee Stadium. The Bronx burning around it was visible from the stadium.",
-        "Type": "within"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.926885,
-          40.829392
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "South Bronx",
-        "Date": "1970s",
-        "Description": "South Bronx was beset by arson in the 1970s, losing 80% of its housing stock and causing massive displacement.",
-        "Type": "area"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -73.932866,
-              40.809064
-            ],
-            [
-              -73.926987,
-              40.802552
-            ],
-            [
-              -73.911933,
-              40.796474
-            ],
-            [
-              -73.902614,
-              40.805048
-            ],
-            [
-              -73.890858,
-              40.806134
-            ],
-            [
-              -73.884263,
-              40.801793
-            ],
-            [
-              -73.878958,
-              40.802769
-            ],
-            [
-              -73.876234,
-              40.801033
-            ],
-            [
-              -73.871933,
-              40.801467
-            ],
-            [
-              -73.868492,
-              40.806568
-            ],
-            [
-              -73.871933,
-              40.813187
-            ],
-            [
-              -73.881682,
-              40.817961
-            ],
-            [
-              -73.884549,
-              40.822735
-            ],
-            [
-              -73.884406,
-              40.828919
-            ],
-            [
-              -73.932579,
-              40.83673
-            ],
-            [
-              -73.933582,
-              40.833259
-            ],
-            [
-              -73.933009,
-              40.827184
-            ],
-            [
-              -73.931862,
-              40.821542
-            ],
-            [
-              -73.931862,
-              40.821216
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Yonkers",
-        "Date": "1960s",
-        "Description": "The more well-to-do residents of the Bronx moved to Yonkers in response to the displacement from the Expressway and as a reaction to more people of color moving into the Bronx.",
-        "Type": "connected"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.899904,
-          40.931031
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Harlem",
-        "Date": "1960s",
-        "Description": "In the 1960s, many Black families moved from Harlem to the Bronx.",
-        "Type": "connected"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.945644,
-          40.808013
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Co-Op City",
-        "Date": "1960s",
-        "Description": "Many Jewish and Italian families moved to Co-op City in response to displacement from the Expressway being built.",
-        "Type": "within"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.829626,
-          40.874254
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Manhattan",
-        "Date": "1950s",
-        "Description": "The destruction of the 3rd Avenue Elevated Line cut off the Bronx from Manhattan, leading to property values plummetting.",
-        "Type": "connected"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.986686,
-          40.758258
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Puerto Rico",
-        "Date": "1965",
-        "Description": "The passage of the Hart-Celler Act led to widespread immigration to the U.S., with Puerto Rico being a huge source of immigration to the Bronx.",
-        "Type": "connected"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -66.625785,
-          18.356502
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Foxhurst",
-        "Date": "1970s",
-        "Description": "Foxhurst was the neighborhood that the 41st Precinct served. In the 70s, over two-thirds of the population of the neighborhood fled.",
-        "Type": "area"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -73.89385,
-              40.834833
-            ],
-            [
-              -73.893922,
-              40.834931
-            ],
-            [
-              -73.896246,
-              40.8335
-            ],
-            [
-              -73.900623,
-              40.822153
-            ],
-            [
-              -73.89895,
-              40.821739
-            ],
-            [
-              -73.898976,
-              40.821023
-            ],
-            [
-              -73.891717,
-              40.82098
-            ],
-            [
-              -73.890263,
-              40.820999
-            ],
-            [
-              -73.885306,
-              40.822825
-            ],
-            [
-              -73.885804,
-              40.828373
-            ],
-            [
-              -73.888166,
-              40.829544
-            ],
-            [
-              -73.891759,
-              40.830102
-            ],
-            [
-              -73.893731,
-              40.834678
-            ],
-            [
-              -73.89385,
-              40.834833
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Name": "Charlotte St. and Boston Rd. Fires",
-        "Date": "1970s",
-        "Description": "This intersection and the surrounding blocks became the national symbol of urban decay. Charlotte St. alone experienced thousands of fires.",
-        "Type": "area"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -73.893274,
-              40.83623
-            ],
-            [
-              -73.894147,
-              40.834976
-            ],
-            [
-              -73.894147,
-              40.834976
-            ],
-            [
-              -73.893999,
-              40.832274
-            ],
-            [
-              -73.892782,
-              40.832367
-            ],
-            [
-              -73.891693,
-              40.832703
-            ],
-            [
-              -73.893274,
-              40.83623
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.892746,
-          40.825626
-        ]
-      },
-      "properties": {
-        "Name": "\"Fort Apache\" - The 41st Precinct",
-        "Date": "1914-1993",
-        "Description": "This was the home of the NYPD's 41st Precinct, nicknamed \"Fort Apache\" during the 1970s.",
-        "Type": "within"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.920155,
-          40.817243
-        ]
-      },
-      "properties": {
-        "Name": "Engine Company 41-2",
-        "Date": "1974",
-        "Description": "Firehouse that was closed on January 17th, 1974.",
-        "Type": "within"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.92216,
-          40.813088
-        ]
-      },
-      "properties": {
-        "Name": "Ladder Company 71-2",
-        "Date": "1974",
-        "Description": "Firehouse that was closed on December 16th, 1974.",
-        "Type": "within"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.899058,
-          40.846085
-        ]
-      },
-      "properties": {
-        "Name": "Ladder Company 27-2",
-        "Date": "1972",
-        "Description": "Firehouse that was closed on November 6th, 1972.",
-        "Type": "within"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.908059,
-          40.828227
-        ]
-      },
-      "properties": {
-        "Name": "Engine Company 50-2",
-        "Date": "1974",
-        "Description": "Firehouse that was closed on March 22nd, 1974.",
-        "Type": "within"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -73.887734,
-          40.851896
-        ]
-      },
-      "properties": {
-        "Name": "Engine Company 88-2",
-        "Date": "1972",
-        "Description": "Firehouse that was closed on November 22nd, 1972.",
-        "Type": "within"
-      }
-    }
-  ]
-};
+  function loadFile(file) { return fetch(file).then(function (r) { if (!r.ok) { throw new Error(file + " " + r.status); } return r.json(); }); }
+  Promise.allSettled([loadFile("polygons.geojson"), loadFile("lines.geojson"), loadFile("points.geojson")]).then(function (results) {
+    const data = { type: "FeatureCollection", features: [] };
+    results.forEach(function (r) { if (r.status === "fulfilled") { data.features = data.features.concat(r.value.features || []); } else { console.warn(r.reason); } });
+    startPage(data);
+  });
+
+  function startPage(data) {
 
   // ---------------------------------------------------------------
   // MAP
@@ -638,18 +144,28 @@
   const map = L.map("map", { zoomControl: false });
   L.control.zoom({ position: "bottomright" }).addTo(map);
   const attribution = "&copy; OpenStreetMap contributors &copy; CARTO";
+  const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
   const darkMap = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    { subdomains: "abcd", maxZoom: 20, attribution: attribution }).addTo(map);
+    { subdomains: "abcd", maxZoom: 20, attribution: attribution });
   const lightMap = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     { subdomains: "abcd", maxZoom: 20, attribution: attribution });
+  // No account or key is needed for any map below. If the standard map keeps failing to load,
+  // the page switches to the backup map by itself.
+  let tileErrors = 0;
+  osm.on("tileerror", function () { tileErrors++; if (tileErrors === 6 && map.hasLayer(osm)) { map.removeLayer(osm); lightMap.addTo(map); } });
 
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
   function popupHtml(p) {
+    // Optional columns: Image = a photo file name in the images folder; Link = the id of a part of the essay (for example "migration")
+    const image = p.Image ? String(p.Image).trim() : "", link = p.Link ? String(p.Link).trim() : "";
+    const imgHtml = image ? '<img src="../images/' + esc(image) + '" alt="' + esc(p.Alt || p.Name || "") + '" style="width:100%;max-width:240px;margin:6px 0;border-radius:6px;">' : "";
+    const href = link ? (/^(https?:|\.\.\/)/.test(link) ? link : "../essay.html#" + link) : "";
+    const linkHtml = href ? '<div style="margin-top:6px;"><a href="' + esc(href) + '" target="_top">Read more in the essay</a></div>' : "";
     return '<div class="popup-name">' + esc(p.Name || "Untitled") + "</div>" +
-           (p.Date ? '<div class="popup-date">' + esc(p.Date) + "</div>" : "") +
-           '<div class="popup-desc">' + esc(p.Description || "") + "</div>";
+           (p.Date ? '<div class="popup-date">' + esc(p.Date) + "</div>" : "") + imgHtml +
+           '<div class="popup-desc">' + (p.Description || "") + "</div>" + linkHtml;   // shown as written, so a photo (img) tag can be added to a description
   }
   function byType(type) {
     return data.features.filter(function (f) { return (f.properties || {}).Type === type; });
@@ -895,7 +411,7 @@
     this.setAttribute("aria-pressed", paused ? "true" : "false");
     this.textContent = paused ? "Play animation" : "Pause animation";
   });
-  L.control.layers({ "Dark map": darkMap, "Light map": lightMap },
+  L.control.layers({ "Standard map (OpenStreetMap)": osm, "Dark map (CARTO)": darkMap, "Light map (CARTO)": lightMap },
     { "Gold connections": goldLayer, "Areas": areaLayer, "Places": pointLayer },
     { position: "topright", collapsed: true }).addTo(map);
 
@@ -919,6 +435,7 @@
     return div;
   };
   legend.addTo(map);
+  }
   </script>
 </body>
 </html>
